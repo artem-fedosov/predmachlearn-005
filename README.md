@@ -1,4 +1,4 @@
 predmachlearn-005
 =================
 
-Coursera predmachlearn-005 writepu
+Coursera predmachlearn-005 writeup

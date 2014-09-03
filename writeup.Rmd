@@ -1,0 +1,55 @@
+---
+title: "Exercise quality prediction on sensor measurements"
+author: "Artyom B. Fedosov"
+date: "2 Sep 2014"
+output: html_document
+---
+
+The goal of the work is to develop a model that predicts quality of the phisical exercise made by a subject. Quality is described as 4 categories: A, B, C, D. 
+
+The writeup describes developed model and transformation required to reproduce results.
+
+Data preparation
+===
+First the data is split to training and test sets. After some exploration it was found that many variables has 'NA' and '#DIV/0!' as almost all of the values in both training and test sets. These do not convey any predictive power and are excluded from predictors. 
+
+There are also other variables that are not measurements. These are timestamps, user_name and others. These were excluded from predictors as well as they do not able to improve predictions on new data.
+
+```{r, echo=FALSE, message=FALSE}
+library(doMC)  # To use caret's support for multicore in Random Forest
+registerDoMC(cores=5)  # Register 5 cores
+library(caret)
+```
+
+```{r, echo=TRUE, cache=TRUE}
+library(caret)
+
+set.seed(415)
+
+testing <- read.csv("pml-testing.csv", na.strings=c('NA', '#DIV/0!'))
+training_raw <- read.csv("pml-training.csv", na.strings=c('NA', '#DIV/0!'))
+
+inTrain <- createDataPartition(training_raw$classe, p=0.7, list=F)
+training <- training_raw[inTrain, ]
+cv <- training_raw[-inTrain, ]  # cross-validation set
+
+# Compute na counts for for all columns.
+na_count <- sapply(training, function(x) { sum(is.na(x)) })
+
+# Exclude variables that have na(s).
+# Exculde variables like subject name and timestamp 
+# that have no prediction power on new data.
+feature_names <- names(na_count[na_count == nrow(training)])[8:58]
+```
+
+Model selection
+===
+Random Forest model was checked first as there may be non-linear relationships between variables. 
+
+```{r, echo=TRUE, cache=TRUE}
+fit <- train(training[, feature_names], training$classe, method='rf')
+prediction <- predict(fit, cv[, feature_names])
+confusionMatrix(prediction, cv$classe)
+```
+
+Accuracy, Sensitivity, Specificity, Pos Pred Value and Neg Pred Value all show 97-100%. Acctual requirements on model accuracy and other statistics may depend on application. The goal of the work is to make "goog enough" model to predict right 20 values from test set. Computed model is far more powerful than required.
