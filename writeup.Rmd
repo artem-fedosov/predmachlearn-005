@@ -52,4 +52,6 @@ prediction <- predict(fit, cv[, feature_names])
 confusionMatrix(prediction, cv$classe)
 ```
 
-Accuracy, Sensitivity, Specificity, Pos Pred Value and Neg Pred Value all show 97-100%. Acctual requirements on model accuracy and other statistics may depend on application. The goal of the work is to make "goog enough" model to predict right 20 values from test set. Computed model is far more powerful than required.
+Expected out of sample errors is estimated with cross-validation set. Accuracy, Sensitivity, Specificity, Pos Pred Value and Neg Pred Value all show 97-100%. Acctual requirements on model accuracy and other statistics may depend on application. The goal of the work is to make "goog enough" model to predict right 20 values from test set. Computed model is far more powerful than required.
+
+
