@@ -2,7 +2,7 @@
 title: "Exercise quality prediction on sensor measurements"
 author: "Artyom B. Fedosov"
 date: "2 Sep 2014"
-output: html_document
+output: pdf_document
 ---
 
 The goal of the work is to develop a model that predicts quality of the phisical exercise made by a subject. Quality is described as 4 categories: A, B, C, D. 
@@ -39,7 +39,7 @@ na_count <- sapply(training, function(x) { sum(is.na(x)) })
 # Exclude variables that have na(s).
 # Exculde variables like subject name and timestamp 
 # that have no prediction power on new data.
-feature_names <- names(na_count[na_count == nrow(training)])[8:58]
+feature_names <- names(na_count[na_count == 0])[8:58]
 ```
 
 Model selection
